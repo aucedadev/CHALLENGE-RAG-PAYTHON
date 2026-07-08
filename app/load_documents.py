@@ -1,25 +1,29 @@
-from langchain_community.document_loaders import PyPDFDirectoryLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# 1. Leer los PDFs
-loader = PyPDFDirectoryLoader("../documentos")
-documents = loader.load()
+from app.config import DOCUMENTS_DIR, CHUNK_SIZE, CHUNK_OVERLAP
 
-print(f"Se encontraron {len(documents)} páginas.")
 
-# 2. Crear el separador de texto
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,
-    chunk_overlap=100
-)
+def load_documents():
+    documents = []
 
-# 3. Dividir el documento en chunks
-chunks = text_splitter.split_documents(documents)
+    pdf_files = list(DOCUMENTS_DIR.glob("*.pdf"))
 
-print(f"\nSe generaron {len(chunks)} chunks.\n")
+    if not pdf_files:
+        print("No se encontraron archivos PDF en data/documentos")
+        return []
 
-# 4. Mostrar los primeros 3 chunks
-for i, chunk in enumerate(chunks[:3]):
-    print(f"========== Chunk {i+1} ==========")
-    print(chunk.page_content)
-    print()
+    for pdf_file in pdf_files:
+        loader = PyPDFLoader(str(pdf_file))
+        documents.extend(loader.load())
+
+    return documents
+
+
+def split_documents(documents):
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP
+    )
+
+    return text_splitter.split_documents(documents)
