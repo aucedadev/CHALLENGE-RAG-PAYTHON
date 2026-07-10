@@ -18,3 +18,5 @@ __pycache__/
 .DS_Store
 
 Thumbs.db
+#data de usuarios
+data/users.db
