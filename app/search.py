@@ -1,5 +1,5 @@
-from langchain_community.vectorstores import Chroma
 
+from langchain_chroma import Chroma
 from app.config import CHROMA_DIR, TOP_K
 from app.embeddings import get_embedding_model
 
@@ -12,7 +12,7 @@ def search_documents(question: str):
         embedding_function=embedding_model
     )
 
-    results = vector_db.similarity_search(
+    results = vector_db.similarity_search_with_score(
         question,
         k=TOP_K
     )
