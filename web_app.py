@@ -17,6 +17,9 @@ def initialize_session() -> None:
     if "user" not in st.session_state:
         st.session_state.user = None
 
+    if "current_page" not in st.session_state:
+        st.session_state.current_page = "Inicio"
+
 
 def show_login() -> None:
     st.title("🤖 AGENTE PILON")
@@ -41,21 +44,69 @@ def show_login() -> None:
         st.session_state.user = user
         st.rerun()
 
+def logout() -> None:
+    st.session_state.authenticated = False
+    st.session_state.user = None
+
+    if "current_page" in st.session_state:
+        del st.session_state.current_page
+
+    st.rerun()
 
 def show_dashboard() -> None:
     user = st.session_state.user
 
-    st.title("🤖 Bienvenido al AGENTE PILON")
-    st.success(f"Sesión iniciada como: {user['username']}")
-    st.write(f"Rol: **{user['role']}**")
+    with st.sidebar:
+        st.title("🤖 RAG Enterprise")
+        st.write(f"Usuario: **{user['username']}**")
+        st.write(f"Rol: **{user['role']}**")
+        st.divider()
 
-    st.info("El inicio de sesión funciona correctamente.")
+        menu_options = ["Inicio", "Chat"]
 
-    if st.button("Cerrar sesión"):
-        st.session_state.authenticated = False
-        st.session_state.user = None
-        st.rerun()
+        if user["role"] == "admin":
+            menu_options.extend(["Documentos", "Usuarios"])
 
+        current_page = st.radio(
+            "Menú",
+            menu_options,
+            key="current_page",
+        )
+
+        st.divider()
+
+        if st.button(
+            "Cerrar sesión",
+            use_container_width=True,
+        ):
+            logout()
+
+    if current_page == "Inicio":
+        st.title("Panel principal")
+        st.success(f"Bienvenido, {user['username']}.")
+
+        if user["role"] == "admin":
+            st.write(
+                "Desde este panel podrás consultar documentos, "
+                "cargar archivos PDF y administrar usuarios."
+            )
+        else:
+            st.write(
+                "Desde este panel podrás consultar la información "
+                "disponible en los documentos."
+            )
+
+    elif current_page == "Chat":
+        st.title("💬 Chat")
+        st.info("El chat se implementará en el siguiente paso.")
+
+    elif current_page == "Documentos":
+        st.title("📄 Documentos")
+        st.info("La gestión de documentos se implementará próximamente.")
+
+    elif current_page == "Usuarios":
+        st.title("👥 Usuarios")
+        st.info("La gestión de usuarios se implementará próximamente.")
 
 def main() -> None:
     initialize_users_db()
