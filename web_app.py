@@ -1,10 +1,11 @@
 import streamlit as st
 
+from app.ask import ask_question
 from app.users import authenticate_user, initialize_users_db
 
 
 st.set_page_config(
-    page_title="AGENTE RAG",
+    page_title="RAG Enterprise",
     page_icon="🤖",
     layout="centered",
 )
@@ -20,14 +21,18 @@ def initialize_session() -> None:
     if "current_page" not in st.session_state:
         st.session_state.current_page = "Inicio"
 
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
 
 def show_login() -> None:
-    st.title("🤖 AGENTE PILON")
+    st.title("🤖 RAG Enterprise")
     st.subheader("Inicio de sesión")
 
     with st.form("login_form"):
         username = st.text_input("Usuario")
         password = st.text_input("Contraseña", type="password")
+
         submitted = st.form_submit_button(
             "Iniciar sesión",
             use_container_width=True,
@@ -42,16 +47,66 @@ def show_login() -> None:
 
         st.session_state.authenticated = True
         st.session_state.user = user
+        st.session_state.current_page = "Inicio"
         st.rerun()
+
 
 def logout() -> None:
     st.session_state.authenticated = False
     st.session_state.user = None
+    st.session_state.messages = []
 
     if "current_page" in st.session_state:
         del st.session_state.current_page
 
     st.rerun()
+
+
+def show_chat() -> None:
+    st.title("Agente Pilon ")
+    st.caption(
+        "Haz preguntas relacionados a la empresa TDV"
+        "en los documentos PDF cargados."
+    )
+
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    question = st.chat_input("Escribe tu pregunta")
+
+    if not question:
+        return
+
+    st.session_state.messages.append(
+        {
+            "role": "user",
+            "content": question,
+        }
+    )
+
+    with st.chat_message("user"):
+        st.markdown(question)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Buscando información..."):
+            try:
+                response = ask_question(question)
+                st.markdown(response)
+
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": response,
+                    }
+                )
+
+            except Exception as error:
+                st.error(
+                    "Ocurrió un error al consultar los documentos."
+                )
+                st.exception(error)
+
 
 def show_dashboard() -> None:
     user = st.session_state.user
@@ -97,16 +152,22 @@ def show_dashboard() -> None:
             )
 
     elif current_page == "Chat":
-        st.title("💬 Chat")
-        st.info("El chat se implementará en el siguiente paso.")
+        show_chat()
 
     elif current_page == "Documentos":
         st.title("📄 Documentos")
-        st.info("La gestión de documentos se implementará próximamente.")
+        st.info(
+            "La gestión de documentos se implementará "
+            "en el siguiente paso."
+        )
 
     elif current_page == "Usuarios":
         st.title("👥 Usuarios")
-        st.info("La gestión de usuarios se implementará próximamente.")
+        st.info(
+            "La gestión de usuarios se implementará "
+            "en un siguiente paso."
+        )
+
 
 def main() -> None:
     initialize_users_db()
