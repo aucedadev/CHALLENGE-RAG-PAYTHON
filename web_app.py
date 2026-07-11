@@ -27,6 +27,8 @@ def initialize_session() -> None:
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
+    if "document_to_delete" not in st.session_state:
+        st.session_state.document_to_delete = None
 
 
 def show_login() -> None:
@@ -123,9 +125,63 @@ def show_documents() -> None:
 
     if pdf_files:
         for pdf_file in pdf_files:
-            st.write(f"📄 {pdf_file.name}")
+            col1, col2 = st.columns([5, 1])
+
+            with col1:
+                st.write(f"📄 {pdf_file.name}")
+
+            with col2:
+                if st.button(
+                    "🗑️",
+                    key=f"delete_{pdf_file.name}",
+                    help=f"Eliminar {pdf_file.name}",
+                ):
+                    st.session_state.document_to_delete = pdf_file.name
     else:
         st.info("Todavía no hay documentos PDF cargados.")
+
+    if st.session_state.document_to_delete:
+        filename = st.session_state.document_to_delete
+
+        st.warning(f"¿Seguro que deseas eliminar **{filename}**?")
+
+        confirm_col, cancel_col = st.columns(2)
+
+        with confirm_col:
+            if st.button(
+                "Sí, eliminar",
+                use_container_width=True,
+                type="primary",
+            ):
+                file_path = DOCUMENTS_DIR / filename
+
+                try:
+                    file_path.unlink()
+                    del st.session_state.document_to_delete
+
+                    st.success(
+                        f"El documento {filename} fue eliminado correctamente."
+                    )
+                    st.warning(
+                        "Debes reconstruir la base vectorial para aplicar el cambio."
+                    )
+                    st.rerun()
+
+                except FileNotFoundError:
+                    st.error("El documento ya no existe.")
+                    del st.session_state.document_to_delete
+
+                except Exception as error:
+                    st.error("No se pudo eliminar el documento.")
+                    st.exception(error)
+
+        with cancel_col:
+            if st.button(
+                "Cancelar",
+                use_container_width=True,
+            ):
+                del st.session_state.document_to_delete
+                st.rerun()
 
     st.divider()
 
