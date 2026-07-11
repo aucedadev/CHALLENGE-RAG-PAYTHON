@@ -1,11 +1,15 @@
 import streamlit as st
+from pathlib import Path
+
+from app.config import DOCUMENTS_DIR
+from app.create_vector_db import create_vector_db
 
 from app.ask import ask_question
 from app.users import authenticate_user, initialize_users_db
 
 
 st.set_page_config(
-    page_title="RAG Enterprise",
+    page_title="BimBam Buy",
     page_icon="🤖",
     layout="centered",
 )
@@ -26,7 +30,7 @@ def initialize_session() -> None:
 
 
 def show_login() -> None:
-    st.title("🤖 RAG Enterprise")
+    st.title("🤖 RAG BimBam Buy")
     st.subheader("Inicio de sesión")
 
     with st.form("login_form"):
@@ -63,9 +67,9 @@ def logout() -> None:
 
 
 def show_chat() -> None:
-    st.title("Agente Pilon ")
+    st.title("Agente BimBam Buy ")
     st.caption(
-        "Haz preguntas relacionados a la empresa TDV"
+        "Haz preguntas relacionados a la empresa "
         "en los documentos PDF cargados."
     )
 
@@ -107,12 +111,80 @@ def show_chat() -> None:
                 )
                 st.exception(error)
 
+def show_documents() -> None:
+    st.title("📄 Documentos")
+    st.caption("Carga archivos PDF y actualiza la base de conocimiento.")
+
+    DOCUMENTS_DIR.mkdir(parents=True, exist_ok=True)
+
+    st.subheader("Documentos cargados")
+
+    pdf_files = sorted(DOCUMENTS_DIR.glob("*.pdf"))
+
+    if pdf_files:
+        for pdf_file in pdf_files:
+            st.write(f"📄 {pdf_file.name}")
+    else:
+        st.info("Todavía no hay documentos PDF cargados.")
+
+    st.divider()
+
+    st.subheader("Cargar nuevos documentos")
+
+    uploaded_files = st.file_uploader(
+        "Selecciona uno o varios archivos PDF",
+        type=["pdf"],
+        accept_multiple_files=True,
+    )
+
+    if st.button(
+        "Guardar documentos",
+        use_container_width=True,
+        disabled=not uploaded_files,
+    ):
+        saved_files = []
+
+        for uploaded_file in uploaded_files:
+            safe_filename = Path(uploaded_file.name).name
+            destination = DOCUMENTS_DIR / safe_filename
+
+            with open(destination, "wb") as file:
+                file.write(uploaded_file.getbuffer())
+
+            saved_files.append(safe_filename)
+
+        st.success(
+            f"Se guardaron {len(saved_files)} documento(s) correctamente."
+        )
+
+        for filename in saved_files:
+            st.write(f"✅ {filename}")
+
+    st.divider()
+
+    st.subheader("Actualizar base vectorial")
+    st.warning(
+        "Este proceso vuelve a procesar todos los PDF y puede tardar "
+        "varios minutos."
+    )
+
+    if st.button(
+        "Reconstruir base vectorial",
+        use_container_width=True,
+    ):
+        with st.spinner("Procesando documentos y creando embeddings..."):
+            try:
+                create_vector_db()
+                st.success("Base vectorial actualizada correctamente.")
+            except Exception as error:
+                st.error("No se pudo actualizar la base vectorial.")
+                st.exception(error)
 
 def show_dashboard() -> None:
     user = st.session_state.user
 
     with st.sidebar:
-        st.title("🤖 RAG Enterprise")
+        st.title("🤖 RAG BimBam Buy")
         st.write(f"Usuario: **{user['username']}**")
         st.write(f"Rol: **{user['role']}**")
         st.divider()
@@ -155,12 +227,7 @@ def show_dashboard() -> None:
         show_chat()
 
     elif current_page == "Documentos":
-        st.title("📄 Documentos")
-        st.info(
-            "La gestión de documentos se implementará "
-            "en el siguiente paso."
-        )
-
+        show_documents()
     elif current_page == "Usuarios":
         st.title("👥 Usuarios")
         st.info(

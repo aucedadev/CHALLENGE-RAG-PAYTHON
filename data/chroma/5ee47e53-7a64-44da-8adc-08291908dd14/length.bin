@@ -1,3 +1,14 @@
-invalid type: string "25. Reglas de comunicación al cliente\nLa comunicación debe ser:\n•  Clara\n•  Respetuosa\n•  Consistente\n•  Sin tecnicismos innecesarios\n•  Sin prometer resultados antes de completar la validación\nSi el caso se rechaza, la explicación debe incluir el motivo concreto y, cuando aplique, la opción\ndisponible para el cliente.", expected i64 Pagos
-ocal lo\n
-���
+29. Registro y auditoría
+Cada caso relevante debe conservar:
+• ID del afiliado
+• Fecha de la incidencia
+• Tipo de campaña
+• Prueba de atribución
+• Decisión tomada
+• Responsable de revisión
+30. Recomendaciones de contenido
+• Crear contenido honesto y útil
+• Mostrar beneficios reales
+• Evitar claims absolutos
+• Mantener consistencia visual
+• Enlazar siempre a páginas ofi

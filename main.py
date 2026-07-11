@@ -3,7 +3,7 @@ from app.ask import ask_question
 
 def main():
     print("=" * 60)
-    print("🤖 RAG-PYTHON")
+    print("🤖 RAG BimBam Buy")
     print("Escribe 'salir' para terminar.")
     print("=" * 60)
 
