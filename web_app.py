@@ -5,7 +5,13 @@ from app.config import DOCUMENTS_DIR
 from app.create_vector_db import create_vector_db
 
 from app.ask import ask_question
-from app.users import authenticate_user, initialize_users_db
+from app.users import (
+    authenticate_user,
+    create_user,
+    initialize_users_db,
+    list_users,
+    set_user_active,
+)
 
 
 st.set_page_config(
@@ -236,6 +242,123 @@ def show_documents() -> None:
                 st.error("No se pudo actualizar la base vectorial.")
                 st.exception(error)
 
+def show_users() -> None:
+    st.title("👥 Administración de usuarios")
+    st.caption("Crea usuarios y controla su acceso al sistema.")
+
+    current_user = st.session_state.user
+
+    st.subheader("Crear usuario")
+
+    with st.form("create_user_form", clear_on_submit=True):
+        username = st.text_input("Nombre de usuario")
+        password = st.text_input("Contraseña", type="password")
+        confirm_password = st.text_input(
+            "Confirmar contraseña",
+            type="password",
+        )
+        role = st.selectbox(
+            "Rol",
+            options=["user", "admin"],
+            format_func=lambda value: (
+                "Usuario" if value == "user" else "Administrador"
+            ),
+        )
+
+        submitted = st.form_submit_button(
+            "Crear usuario",
+            use_container_width=True,
+        )
+
+    if submitted:
+        if not username.strip():
+            st.error("El nombre de usuario es obligatorio.")
+
+        elif not password:
+            st.error("La contraseña es obligatoria.")
+
+        elif password != confirm_password:
+            st.error("Las contraseñas no coinciden.")
+
+        elif len(password) < 6:
+            st.error("La contraseña debe tener al menos 6 caracteres.")
+
+        else:
+            try:
+                created = create_user(
+                    username=username,
+                    password=password,
+                    role=role,
+                )
+
+                if created:
+                    st.success("Usuario creado correctamente.")
+                    st.rerun()
+                else:
+                    st.error("Ese nombre de usuario ya existe.")
+
+            except ValueError as error:
+                st.error(str(error))
+
+            except Exception as error:
+                st.error("No se pudo crear el usuario.")
+                st.exception(error)
+
+    st.divider()
+    st.subheader("Usuarios registrados")
+
+    users = list_users()
+
+    if not users:
+        st.info("No hay usuarios registrados.")
+        return
+
+    for user in users:
+        information_column, action_column = st.columns([4, 2])
+
+        with information_column:
+            status = "🟢 Activo" if user["is_active"] else "🔴 Inactivo"
+            role_name = (
+                "Administrador"
+                if user["role"] == "admin"
+                else "Usuario"
+            )
+
+            st.markdown(f"**{user['username']}**")
+            st.write(f"Rol: {role_name}")
+            st.write(f"Estado: {status}")
+
+        with action_column:
+            is_current_user = user["id"] == current_user["id"]
+
+            if is_current_user:
+                st.info("Sesión actual")
+
+            elif user["is_active"]:
+                if st.button(
+                    "Desactivar",
+                    key=f"deactivate_user_{user['id']}",
+                    use_container_width=True,
+                ):
+                    set_user_active(user["id"], False)
+                    st.success(
+                        f"El usuario {user['username']} fue desactivado."
+                    )
+                    st.rerun()
+
+            else:
+                if st.button(
+                    "Activar",
+                    key=f"activate_user_{user['id']}",
+                    use_container_width=True,
+                ):
+                    set_user_active(user["id"], True)
+                    st.success(
+                        f"El usuario {user['username']} fue activado."
+                    )
+                    st.rerun()
+
+        st.divider()
 def show_dashboard() -> None:
     user = st.session_state.user
 
@@ -285,11 +408,7 @@ def show_dashboard() -> None:
     elif current_page == "Documentos":
         show_documents()
     elif current_page == "Usuarios":
-        st.title("👥 Usuarios")
-        st.info(
-            "La gestión de usuarios se implementará "
-            "en un siguiente paso."
-        )
+        show_users()
 
 
 def main() -> None:
