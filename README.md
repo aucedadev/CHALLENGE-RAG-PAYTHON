@@ -47,18 +47,12 @@ La aplicación cuenta con una interfaz web desarrollada con **Streamlit**, auten
 
 ---
 
-## 💬 Chat RAG
+## 💬 Chat RAG Funcionando en Oracle
 
 ![Chat](screenshots/chat.png)
 
 ---
 
-## ☁️ Despliegue en Oracle Cloud
-
-![Oracle Cloud](screenshots/oracle-cloud.png)
-
-
----
 
 # 🏗 Arquitectura
 
