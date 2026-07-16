@@ -204,15 +204,18 @@ contraseña:root1234
 ---
 #  Ejemplo de preguntas realizadas
 ¿Cuál es el propósito de la Política de Reembolsos y Devoluciones de BimBam Buy?
+<img width="1913" height="916" alt="image" src="https://github.com/user-attachments/assets/20bb763f-9dc1-454c-aa5a-0920b1172874" />
+
 
 ¿Qué hago si mi pago fue rechazado?
+<img width="1911" height="1001" alt="image" src="https://github.com/user-attachments/assets/2fc55bce-b5cb-484d-b125-f30e552f9682" />
 
 ¿Cuándo se confirma un pago?
+<img width="1367" height="432" alt="image" src="https://github.com/user-attachments/assets/847c4a76-9258-4b50-b217-954f258f5f54" />
 
 ¿Cuál es el propósito de la Guía de Tiempos y Costos de Envío de BimBam Buy?
+<img width="1827" height="298" alt="image" src="https://github.com/user-attachments/assets/294060cb-24af-4bcb-87a9-ed7795e68b57" />
 
-¿cuales son los escenarios logisticos?
----
 # 🔐 Autenticación
 
 El sistema incorpora autenticación mediante Streamlit Authenticator.
