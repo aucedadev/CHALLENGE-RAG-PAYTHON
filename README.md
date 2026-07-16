@@ -1,199 +1,156 @@
-# 🤖 RAG Enterprise
+# 🤖 CHALLENGE-RAG-PYTHON
 
-![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.59-red?logo=streamlit)
-![LangChain](https://img.shields.io/badge/LangChain-Framework-green)
-![Ollama](https://img.shields.io/badge/Ollama-LLM-black)
-![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20Database-orange)
-![SQLite](https://img.shields.io/badge/SQLite-Database-blue)
-![License](https://img.shields.io/badge/License-Educational-lightgrey)
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![LangChain](https://img.shields.io/badge/LangChain-Latest-green)
+![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-orange)
+![Ollama](https://img.shields.io/badge/Ollama-Llama3.2-black)
+![Streamlit](https://img.shields.io/badge/Streamlit-WebApp-red)
+![Oracle Cloud](https://img.shields.io/badge/Oracle%20Cloud-Deployed-red)
 
 ---
 
-## 📖 Descripción
+# 📖 Descripción
 
-**RAG Enterprise** es una aplicación web desarrollada en **Python** que implementa la arquitectura **Retrieval-Augmented Generation (RAG)** utilizando **LangChain**, **Ollama**, **ChromaDB** y **Streamlit**.
+CHALLENGE-RAG-PYTHON es un sistema **Retrieval-Augmented Generation (RAG)** desarrollado con Python que permite consultar documentos PDF mediante Inteligencia Artificial.
 
-El sistema permite cargar documentos PDF, convertirlos en una base de conocimiento mediante embeddings y responder preguntas utilizando un modelo de lenguaje local, mostrando además las fuentes utilizadas para generar la respuesta.
+El proyecto utiliza **LangChain**, **ChromaDB**, **Sentence Transformers** y **Ollama** para generar respuestas basadas únicamente en el contenido de los documentos cargados.
 
-Toda la aplicación cuenta con autenticación de usuarios, administración de documentos y gestión de roles.
+La aplicación cuenta con una interfaz web desarrollada con **Streamlit**, autenticación de usuarios, administración de documentos y despliegue en **Oracle Cloud Infrastructure (OCI)**.
 
 ---
 
 # 🚀 Características
 
-### 🤖 Inteligencia Artificial
-
-- Arquitectura RAG
-- Búsqueda semántica
-- Embeddings con HuggingFace
-- Ollama como LLM local
-- Respuestas con fuentes
-- Soporte para múltiples documentos PDF
-
----
-
-### 🌐 Aplicación Web
-
-- Login de usuarios
-- Dashboard
-- Chat con IA
-- Historial de conversación
-- Interfaz desarrollada en Streamlit
+- ✅ Autenticación de usuarios
+- ✅ Gestión de documentos PDF
+- ✅ Base vectorial con ChromaDB
+- ✅ Embeddings mediante Sentence Transformers
+- ✅ Respuestas utilizando Llama 3.2 con Ollama
+- ✅ Chat Web desarrollado con Streamlit
+- ✅ Referencias a las fuentes utilizadas
+- ✅ Despliegue en Oracle Cloud
+- ✅ Inicio automático mediante systemd
 
 ---
 
-### 📄 Gestión Documental
+# 📸 Capturas de pantalla
 
-- Cargar uno o varios PDF
-- Visualizar documentos
-- Eliminar documentos
-- Reconstruir la base vectorial
+## 🔐 Inicio de sesión
 
----
-
-### 👥 Administración
-
-- Crear usuarios
-- Roles Administrador / Usuario
-- Activar usuarios
-- Desactivar usuarios
-- Contraseñas cifradas con bcrypt
+![Login](screenshots/login.png)
 
 ---
 
-# 🛠 Tecnologías utilizadas
+## 📄 Gestión de documentos
 
-| Tecnología | Uso |
-|------------|-----|
-| Python 3.12 | Lenguaje principal |
-| Streamlit | Interfaz web |
-| LangChain | Framework RAG |
-| Ollama | Modelo LLM local |
-| ChromaDB | Base vectorial |
-| HuggingFace Embeddings | Embeddings |
-| SQLite | Base de datos de usuarios |
-| bcrypt | Encriptación de contraseñas |
-| PyPDF | Lectura de documentos PDF |
+![Documentos](screenshots/documentos.png)
+
+---
+
+## 💬 Chat RAG
+
+![Chat](screenshots/chat.png)
+
+---
+
+## ☁️ Despliegue en Oracle Cloud
+
+![Oracle Cloud](screenshots/oracle-cloud.png)
+
 
 ---
 
 # 🏗 Arquitectura
 
+```text
+                 Usuario
+                     │
+                     ▼
+             Streamlit Web
+                     │
+                     ▼
+              LangChain RAG
+                     │
+      ┌──────────────┴──────────────┐
+      ▼                             ▼
+ ChromaDB                    Ollama (Llama 3.2)
+      │
+      ▼
+Documentos PDF
 ```
-                    Usuario
 
-                        │
+---
 
-                        ▼
+# 🛠 Tecnologías utilizadas
 
-                Streamlit (web_app.py)
-
-                        │
-
-                        ▼
-
-                    ask.py
-
-                        │
-
-                        ▼
-
-                  search.py
-
-                        │
-
-                        ▼
-
-                  ChromaDB
-
-                        │
-
-                        ▼
-
-                    Ollama
-
-                        │
-
-                        ▼
-
-                  Respuesta
-```
+| Tecnología | Descripción |
+|------------|-------------|
+| Python 3.12 | Lenguaje principal |
+| LangChain | Framework RAG |
+| ChromaDB | Base de datos vectorial |
+| Sentence Transformers | Generación de embeddings |
+| Ollama | Ejecución local del LLM |
+| Llama 3.2 | Modelo de lenguaje |
+| Streamlit | Interfaz Web |
+| Streamlit Authenticator | Login |
+| Git | Control de versiones |
+| GitHub | Repositorio |
+| Oracle Cloud Infrastructure | Despliegue |
+| Ubuntu 24.04 | Sistema Operativo |
 
 ---
 
 # 📂 Estructura del proyecto
 
 ```text
-RAG-PYTHON/
+CHALLENGE-RAG-PYTHON
 │
 ├── app/
-│   ├── __init__.py
-│   ├── ask.py
-│   ├── config.py
-│   ├── create_vector_db.py
-│   ├── embeddings.py
-│   ├── llm.py
-│   ├── load_documents.py
-│   ├── prompts.py
-│   ├── search.py
-│   └── users.py
-│
 ├── data/
 │   ├── chroma/
-│   ├── documentos/
-│   └── users.db
+│   └── documentos/
 │
-├── tests/
+├── screenshots/
 │
-├── .env
-├── .gitignore
-├── create_admin.py
-├── main.py
-├── requirements.txt
 ├── web_app.py
-└── README.md
+├── main.py
+├── create_admin.py
+├── requirements.txt
+├── README.md
+└── .env
 ```
 
 ---
 
 # ⚙ Instalación
 
-## 1️⃣ Clonar el repositorio
+## Clonar repositorio
 
 ```bash
-git clone https://github.com/TU_USUARIO/Rag-python.git
+git clone https://github.com/aucedadev/CHALLENGE-RAG-PAYTHON.git
 
-cd Rag-python
+cd CHALLENGE-RAG-PYTHON
 ```
 
----
+## Crear entorno virtual
 
-## 2️⃣ Crear entorno virtual
+Windows
 
 ```bash
 python -m venv venv
-```
 
----
-
-## 3️⃣ Activar entorno virtual
-
-### Windows
-
-```powershell
 venv\Scripts\activate
 ```
 
-### Linux / macOS
+Linux
 
 ```bash
+python3 -m venv venv
+
 source venv/bin/activate
 ```
 
----
-
-## 4️⃣ Instalar dependencias
+## Instalar dependencias
 
 ```bash
 pip install -r requirements.txt
@@ -203,50 +160,15 @@ pip install -r requirements.txt
 
 # 🤖 Instalar Ollama
 
-Descargar desde
+Descargar Ollama
 
-https://ollama.com
+https://ollama.com/
 
-Luego descargar el modelo:
+Descargar el modelo
 
 ```bash
 ollama pull llama3.2
 ```
-
-Verificar instalación:
-
-```bash
-ollama run llama3.2
-```
-
----
-
-# 📄 Cargar documentos
-
-Copiar los documentos PDF dentro de:
-
-```
-data/documentos
-```
-
-Luego reconstruir la base vectorial:
-
-```bash
-python -m app.create_vector_db
-```
-
----
-
-# 👤 Crear el primer administrador
-
-```bash
-python create_admin.py
-```
-
-Ingresar:
-
-- Usuario
-- Contraseña
 
 ---
 
@@ -256,99 +178,84 @@ Ingresar:
 streamlit run web_app.py
 ```
 
----
+La aplicación estará disponible en:
 
-# 💬 Funcionalidades
-
-## Administrador
-
-- Iniciar sesión
-- Consultar documentos
-- Cargar PDF
-- Eliminar PDF
-- Reconstruir la base vectorial
-- Crear usuarios
-- Activar usuarios
-- Desactivar usuarios
-
----
-
-## Usuario
-
-- Iniciar sesión
-- Consultar documentos
-- Visualizar fuentes de información
-
----
-
-# 📚 Flujo del sistema
-
-```
-Carga PDF
-
-↓
-
-Embeddings
-
-↓
-
-ChromaDB
-
-↓
-
-Pregunta del usuario
-
-↓
-
-Búsqueda semántica
-
-↓
-
-Ollama
-
-↓
-
-Respuesta + Fuentes
+```text
+http://localhost:8501
 ```
 
 ---
 
-# 🔒 Seguridad
+# ☁️ Despliegue
 
-- Contraseñas cifradas con bcrypt
-- Usuarios almacenados en SQLite
-- Roles de acceso
-- LLM ejecutado localmente mediante Ollama
-- No se envían documentos a servicios externos
+La aplicación fue desplegada en **Oracle Cloud Infrastructure (OCI)** utilizando una máquina virtual Ubuntu 24.04.
 
----
+Características del despliegue:
 
-# 📌 Versiones
-
-## ✅ v0.1.0
-
-- Motor RAG
-- LangChain
-- ChromaDB
+- Ubuntu 24.04
+- Oracle Cloud Infrastructure
 - Ollama
-- Embeddings
-- Respuestas con fuentes
+- Streamlit
+- Servicio systemd
+- Puerto TCP 8501 habilitado
+
+La aplicación es accesible mediante una dirección IP pública y el servicio inicia automáticamente al encender la máquina virtual.
+
+http://149.130.181.172:8501/
+
+usuario comun
+
+usuario:root
+contraseña:root1234
+---
+#  Ejemplo de preguntas realizadas
+¿Cuál es el propósito de la Política de Reembolsos y Devoluciones de BimBam Buy?
+
+¿Qué hago si mi pago fue rechazado?
+
+¿Cuándo se confirma un pago?
+
+¿Cuál es el propósito de la Guía de Tiempos y Costos de Envío de BimBam Buy?
+
+¿cuales son los escenarios logisticos?
+---
+# 🔐 Autenticación
+
+El sistema incorpora autenticación mediante Streamlit Authenticator.
+
+Características:
+
+- Login
+- Logout
+- Usuarios administradores y usuarios estandar
+- Control de acceso(desactivo y activo usuarios) solo el admin
 
 ---
 
-## ✅ v0.2.0
+# 📄 Flujo del sistema
 
-- Interfaz web con Streamlit
-- Login
-- Dashboard
-- Chat
-- Gestión documental
-- Administración de usuarios
-- Roles
-- Historial de conversación
+1. El usuario inicia sesión.
+2. Carga documentos PDF(solo admin).
+3. Se generan embeddings.
+4. Los documentos se almacenan en ChromaDB.
+5. El usuario realiza una pregunta.
+6. LangChain recupera el contexto.
+7. Ollama genera la respuesta.
+8. Streamlit muestra la respuesta junto con las fuentes utilizadas.
 
+---
 
+# ✅ Funcionalidades implementadas
 
+- [x] LangChain
+- [x] ChromaDB
+- [x] Ollama
+- [x] Llama 3.2
+- [x] Streamlit
+- [x] Login
+- [x] Gestión de documentos
+- [x] Oracle Cloud
+- [x] Inicio automático mediante systemd
 ---
 
 # 👨‍💻 Autor
@@ -357,10 +264,4 @@ Respuesta + Fuentes
 
 Ingeniero de Sistemas
 
-Proyecto desarrollado con fines educativos y de aprendizaje sobre Inteligencia Artificial Generativa, LangChain y sistemas RAG.
-
----
-
-# ⭐ Si este proyecto te resulta útil...
-
-¡No olvides darle una ⭐ al repositorio!
+Proyecto desarrollado como práctica de Inteligencia Artificial Generativa utilizando LangChain, ChromaDB, Ollama y Oracle Cloud Infrastructure.
